@@ -86,9 +86,11 @@ class Segmenter():
                 wav = (wav - wav.mean()) / wav.std()
                 batch_wavs.append(wav)
         else:
-            assert wav != None
+            assert wav is not None
             is_batch = isinstance(wav, list)
             batch_wavs = wav if is_batch else [wav]
+            batch_wavs = [wav[None,...] for wav in batch_wavs if len(wav.shape)==1]
+            batch_wavs = [torch.from_numpy(wav).float() for wav in batch_wavs if isinstance(wav, np.ndarray)]
         
         orig_lengths = []
         max_length = 0
